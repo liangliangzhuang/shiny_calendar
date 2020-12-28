@@ -1,0 +1,111 @@
+---
+title: "Customize your personal Calendar"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    social: menu
+    source_code: embed
+runtime: shiny
+---
+
+```{r global, include=FALSE}
+# load data in 'global' chunk so it can be shared by all users of the dashboard
+library(datasets)
+library(calendR)
+library(showtext)
+
+font_add("kaishu", "simkai.ttf")
+showtext_auto()
+
+# 判断文件是否存在，如果存在先删除
+if (file.exists("calendar2021.pdf") == T) {
+  file.remove("calendar2021.pdf")
+} 
+
+```
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+fileInput("file1", "Choose jpg File", accept = ".jpg")
+
+selectInput('year', 'Year', 2015:2030)
+    
+selectInput('orientation', 'Orientation', 
+                c("portrait","landscape"))
+
+
+textInput("subtitle", "Subtitle", "每天好心情")
+   
+# output$downloadCSV <- downloadHandler(
+#   filename = 'data.jpg', 
+#   content = function(file) {
+#     write_csv(data_for_dl(), file)
+#   }
+# )
+# downloadLink('downloadJPG', label = 'Download JPG') 
+```
+
+
+
+Column
+-----------------------------------------------------------------------
+
+### Calender
+
+```{r}
+# renderTable({
+# ext <- tools::file_ext(input$file1$datapath)
+# validate(need(ext == "jpg", "Please upload a jpg file."))
+# })
+
+renderPlot({
+  calendR(
+  # 定义标题
+  # title, # 如果缺失，则以年或年月替代
+  year = input$year,
+  title.size = 40,
+  title.col = "white",  # 年份字体颜色
+  
+  # 定义副标题
+  subtitle = input$subtitle,
+  subtitle.size = 13,
+  subtitle.col = "gray30",
+  
+  # 定义月份
+  mbg.col = "#274652",   # 月份背景颜色
+  months.col = "white",  # 月份字体颜色 
+  months.size = 10, # 定义月份字体大小
+  months.pos = 0.5, # 定义月份水平居中
+  
+  # 定义周
+  weeknames = c(
+    "Mo", "Tu", "We", "Th", "Fr", 
+    "Sa", "Su"
+  ),  # 定义周名称
+  weeknames.col = "white",  # 周字体颜色
+  weeknames.size = 4.5, # 定义周字体大小
+  start = "M",  # 设置从周一开始
+
+  # 定义日期
+  days.col = "gray30", # 定义日期的颜色
+  day.size = 3, # 定义日期的字体大小
+  special.days = "weekend",  # 定义周末为特殊日期
+  special.col = "lightblue",  # 特殊日期背景颜色
+  low.col = "white", # 非特殊日期背景颜色
+  lty = 0,  # 去掉边框线 
+  col = "white",
+  
+  # 定义背景、放置方向、生成文件
+  font.family = "kaishu", # 设置字体
+  orientation = input$orientation,  # 垂直放置
+  papersize = "A4", # 设置纸张大小
+  bg.img = input$file1$datapath, # 设置背景图片
+  #pdf = TRUE, # 生成pdf文件
+  #doc_name = "calendar2021"  # 给pdf文件命名
+)
+  })
+showtext_auto(FALSE)
+```

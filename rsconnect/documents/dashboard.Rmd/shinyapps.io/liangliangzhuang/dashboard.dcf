@@ -1,0 +1,10 @@
+name: dashboard
+title:
+username:
+account: liangliangzhuang
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3423895
+bundleId: 4017334
+url: https://liangliangzhuang.shinyapps.io/dashboard/
+when: 1608604102.6065
